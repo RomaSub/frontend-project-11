@@ -4,12 +4,12 @@ install:
 dev:
 	npx webpack serve
 
+build:
+	rm -rf dist
+	NODE_ENV=production npx webpack
+
 lint:
 	npx eslint .
 
 fix:
-	npx eslint --fix .
-
-build:
- 	rm -rf dist
- 	NODE_ENV=production npx webpack
+	npx eslint --fix .	
