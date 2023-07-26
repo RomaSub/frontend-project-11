@@ -1,8 +1,26 @@
-import { string } from 'yup';
+import { setLocale, string } from 'yup';
 import onChange from 'on-change';
+import i18next from 'i18next';
 import render from './render.js';
+import resources from './locales/index.js';
 
 export default () => {
+  setLocale({
+    mixed: {
+      notOneOf: 'errors.rssAlredyWas',
+    },
+    string: {
+      url: 'errors.invalidUrl',
+    },
+  });
+
+  const i18nInstance = i18next.createInstance();
+  i18nInstance.init({
+    lng: 'ru',
+    debug: false,
+    resources,
+  });
+
   const elements = {
     urlInput: document.querySelector('input'),
     form: document.querySelector('.rss-form'),
@@ -17,7 +35,7 @@ export default () => {
     listOfUrls: [],
   };
 
-  const state = onChange(initialState, render(elements));
+  const state = onChange(initialState, render(elements, i18nInstance));
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
