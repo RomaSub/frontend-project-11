@@ -1,5 +1,13 @@
 import onChange from 'on-change';
 
+const renderModal = (elements, state) => {
+  const { modalTitle, modalDescription, linkRead } = elements.modal;
+  const curentPost = state.posts.find((post) => post.id === state.uiState.modalId);
+  modalTitle.textContent = curentPost.title;
+  modalDescription.textContent = curentPost.description;
+  linkRead.href = curentPost.url;
+};
+
 const renderValidation = (elements, state, i18nInstance) => {
   const { feedback, urlInput } = elements;
   if (state.form.condition === 'failed') {
@@ -56,7 +64,11 @@ const renderPosts = (elements, watchedState, i18nInstance) => {
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
     const titleEl = document.createElement('a');
-    titleEl.classList.add('fw-bold');
+    if (watchedState.uiState.viewed.has(post.id)) {
+      titleEl.classList.add('fw-normal', 'link-secondary');
+    } else {
+      titleEl.classList.add('fw-bold');
+    }
     titleEl.setAttribute('href', post.url);
     titleEl.setAttribute('data-id', post.id);
     titleEl.setAttribute('target', '_blank');
@@ -125,6 +137,9 @@ export default (elements, initialState, i18nInstance) => {
         break;
       case 'feeds':
         renderFeeds(elements, watchedState, i18nInstance);
+        break;
+      case 'uiState.modalId':
+        renderModal(elements, watchedState);
         break;
       default:
         break;

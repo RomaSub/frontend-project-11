@@ -12,3 +12,9 @@ export default {
     viewButton: 'Просмотр',
   },
 };
+
+// https://aljazeera.com/xml/rss/all.xml
+//
+// https://buzzfeed.com/world.xml
+//
+// https://thecipherbrief.com/feed

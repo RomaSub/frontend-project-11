@@ -52,6 +52,11 @@ export default () => {
     button: document.querySelector('button[type="submit"]'),
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
+    modal: {
+      modalTitle: document.querySelector('.modal-title'),
+      modalDescription: document.querySelector('.modal-body'),
+      linkRead: document.querySelector('.full-article'),
+    },
   };
 
   const initialState = {
@@ -65,6 +70,10 @@ export default () => {
     },
     feeds: [],
     posts: [],
+    uiState: {
+      modalId: '',
+      viewed: new Set(),
+    },
   };
 
   const state = render(elements, initialState, i18nInstance);
@@ -86,7 +95,6 @@ export default () => {
       .then((response) => {
         state.loading.condition = 'loaded';
         const { feed, posts } = parser(response.data.contents);
-        state.loading.condition = 'loaded';
         const feedId = uniqueId();
         state.feeds.unshift({ ...feed, id: feedId, url });
         const postsId = posts.map((post) => ({ ...post, id: uniqueId() }));
@@ -105,5 +113,10 @@ export default () => {
         state.form.error = error.isParsingError ? 'invalidRss' : error.message;
         state.form.condition = 'failed';
       });
+  });
+  elements.posts.addEventListener('click', (e) => {
+    const { id } = e.target.dataset;
+    state.uiState.modalId = id;
+    state.uiState.viewed.add(id);
   });
 };
