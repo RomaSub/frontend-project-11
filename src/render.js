@@ -128,7 +128,7 @@ const renderFeeds = (elements, watchedState, i18nInstance) => {
 };
 
 export default (elements, initialState, i18nInstance) => {
-  const watchedState = onChange(initialState, (path, value) => {
+  const watchedState = onChange(initialState, (path) => {
     switch (path) {
       case 'form.condition':
         renderValidation(elements, watchedState, i18nInstance);
@@ -144,10 +144,11 @@ export default (elements, initialState, i18nInstance) => {
         renderFeeds(elements, watchedState, i18nInstance);
         break;
       case 'uiState.modalId':
-        renderModal(elements, watchedState, value);
+        renderModal(elements, watchedState);
         break;
       default:
-        throw new Error(`unknow path: ${path}`);
+        // throw new Error(`unknow path: ${path}`);
+        break;
     }
   });
   return watchedState;
