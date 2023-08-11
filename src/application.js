@@ -13,7 +13,7 @@ const createUrl = (link) => {
   return url.href;
 };
 
-const addNewPosts = (state) => {
+const addNewPosts = (state) => { // https://lorem-rss.herokuapp.com/feed?unit=second
   setTimeout(() => {
     const promisesPosts = state.feeds.map(({ url }) => axios.get(createUrl(url))
       .then((response) => {

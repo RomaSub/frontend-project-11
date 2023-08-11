@@ -130,6 +130,7 @@ const renderFeeds = (elements, watchedState, i18nInstance) => {
 export default (elements, initialState, i18nInstance) => {
   const watchedState = onChange(initialState, (path) => {
     switch (path) {
+      case 'form.error':
       case 'form.condition':
         renderValidation(elements, watchedState, i18nInstance);
         break;
@@ -147,8 +148,7 @@ export default (elements, initialState, i18nInstance) => {
         renderModal(elements, watchedState);
         break;
       default:
-        // throw new Error(`unknow path: ${path}`);
-        break;
+        throw new Error(`unknow path: ${path}`);
     }
   });
   return watchedState;
