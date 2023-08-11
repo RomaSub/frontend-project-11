@@ -2,10 +2,14 @@ import onChange from 'on-change';
 
 const renderModal = (elements, state) => {
   const { modalTitle, modalDescription, linkRead } = elements.modal;
-  const curentPost = state.posts.find((post) => post.id === state.uiState.modalId);
-  modalTitle.textContent = curentPost.title;
-  modalDescription.textContent = curentPost.description;
-  linkRead.href = curentPost.url;
+  const currentPost = state.posts.find((post) => post.id === state.uiState.modalId);
+  if (currentPost) {
+    modalTitle.textContent = currentPost.title;
+    modalDescription.textContent = currentPost.description;
+    linkRead.href = currentPost.url;
+  } else {
+    console.error(`currentPost: ${currentPost}`);
+  }
 };
 
 const renderValidation = (elements, state, i18nInstance) => {
@@ -44,54 +48,54 @@ const renderFormProcess = (elements, state, i18nInstance) => {
 const renderPosts = (elements, watchedState, i18nInstance) => {
   const { posts } = elements;
   posts.innerHTML = '';
-  const cardDiv = document.createElement('div');
-  cardDiv.classList.add('card', 'border-0');
+  const postsSection = document.createElement('div');
+  postsSection.classList.add('card', 'border-0');
 
-  const cardBodyDiv = document.createElement('div');
-  cardBodyDiv.classList.add('card-body');
-  const cardTitle = document.createElement('h2');
-  cardTitle.classList.add('card-title', 'h4');
-  cardTitle.textContent = i18nInstance.t('postHead');
-  cardBodyDiv.appendChild(cardTitle);
+  const postEl = document.createElement('div');
+  postEl.classList.add('card-body');
+  const postTitle = document.createElement('h2');
+  postTitle.classList.add('card-title', 'h4');
+  postTitle.textContent = i18nInstance.t('postHead');
+  postEl.appendChild(postTitle);
 
-  cardDiv.appendChild(cardBodyDiv);
+  postsSection.appendChild(postEl);
 
-  const ulEl = document.createElement('ul');
-  ulEl.classList.add('list-group', 'border-0', 'rounded-0');
+  const ulPosts = document.createElement('ul');
+  ulPosts.classList.add('list-group', 'border-0', 'rounded-0');
 
   watchedState.posts.forEach((post) => {
-    const liEl = document.createElement('li');
-    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+    const liPost = document.createElement('li');
+    liPost.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
-    const titleEl = document.createElement('a');
+    const titlePost = document.createElement('a');
     if (watchedState.uiState.viewed.has(post.id)) {
-      titleEl.classList.add('fw-normal', 'link-secondary');
+      titlePost.classList.add('fw-normal', 'link-secondary');
     } else {
-      titleEl.classList.add('fw-bold');
+      titlePost.classList.add('fw-bold');
     }
-    titleEl.setAttribute('href', post.url);
-    titleEl.setAttribute('data-id', post.id);
-    titleEl.setAttribute('target', '_blank');
-    titleEl.setAttribute('rel', 'noopener noreferrer');
-    titleEl.textContent = post.title;
+    titlePost.setAttribute('href', post.url);
+    titlePost.setAttribute('data-id', post.id);
+    titlePost.setAttribute('target', '_blank');
+    titlePost.setAttribute('rel', 'noopener noreferrer');
+    titlePost.textContent = post.title;
 
-    const buttonEl = document.createElement('button');
-    buttonEl.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    buttonEl.setAttribute('type', 'button');
-    buttonEl.setAttribute('data-id', post.id);
-    buttonEl.setAttribute('data-bs-toggle', 'modal');
-    buttonEl.setAttribute('data-bs-target', '#modal');
-    buttonEl.textContent = i18nInstance.t('viewButton');
+    const buttonPost = document.createElement('button');
+    buttonPost.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    buttonPost.setAttribute('type', 'button');
+    buttonPost.setAttribute('data-id', post.id);
+    buttonPost.setAttribute('data-bs-toggle', 'modal');
+    buttonPost.setAttribute('data-bs-target', '#modal');
+    buttonPost.textContent = i18nInstance.t('viewButton');
 
-    liEl.appendChild(titleEl);
-    liEl.appendChild(buttonEl);
+    liPost.appendChild(titlePost);
+    liPost.appendChild(buttonPost);
 
-    ulEl.appendChild(liEl);
+    ulPosts.appendChild(liPost);
   });
 
-  cardDiv.appendChild(ulEl);
+  postsSection.appendChild(ulPosts);
 
-  posts.appendChild(cardDiv);
+  posts.appendChild(postsSection);
 };
 
 const renderFeeds = (elements, watchedState, i18nInstance) => {
@@ -124,7 +128,7 @@ const renderFeeds = (elements, watchedState, i18nInstance) => {
 };
 
 export default (elements, initialState, i18nInstance) => {
-  const watchedState = onChange(initialState, (path) => {
+  const watchedState = onChange(initialState, (path, value) => {
     switch (path) {
       case 'form.condition':
         renderValidation(elements, watchedState, i18nInstance);
@@ -133,16 +137,17 @@ export default (elements, initialState, i18nInstance) => {
         renderFormProcess(elements, watchedState, i18nInstance);
         break;
       case 'posts':
+      case 'uiState.viewed':
         renderPosts(elements, watchedState, i18nInstance);
         break;
       case 'feeds':
         renderFeeds(elements, watchedState, i18nInstance);
         break;
       case 'uiState.modalId':
-        renderModal(elements, watchedState);
+        renderModal(elements, watchedState, value);
         break;
       default:
-        break;
+        throw new Error(`unknow path: ${path}`);
     }
   });
   return watchedState;

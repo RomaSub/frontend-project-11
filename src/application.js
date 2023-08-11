@@ -20,7 +20,7 @@ const addNewPosts = (state) => {
         const { posts } = parser(response.data.contents);
         const newPosts = posts
           .filter((post) => !state.posts.some((existingPost) => existingPost.url === post.url));
-        const updatedPosts = newPosts.map((post) => ({ ...post, id: uniqueId }));
+        const updatedPosts = newPosts.map((post) => ({ ...post, id: uniqueId() }));
         state.posts.unshift(...updatedPosts);
       })
       .catch(() => {}));
