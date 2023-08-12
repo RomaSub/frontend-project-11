@@ -76,48 +76,48 @@ export default () => {
     },
   };
 
-  const state = render(elements, initialState, i18nInstance);
+  const utils = render(elements, initialState, i18nInstance);
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const url = formData.get('url').trim();
-    state.form.condition = 'processing';
+    utils.form.condition = 'processing';
     const allUrls = initialState.feeds.map((el) => el.url);
     const validateUrl = yup.string().url().notOneOf(allUrls);
     validateUrl
       .validate(url)
       .then((validUrl) => {
-        state.form.condition = 'success';
-        state.loading.condition = 'loading';
+        utils.form.condition = 'success';
+        utils.loading.condition = 'loading';
         return axios.get(createUrl(validUrl), { timeout: 5000 });
       })
       .then((response) => {
-        state.loading.condition = 'loaded';
+        utils.loading.condition = 'loaded';
         const { feed, posts } = parser(response.data.contents);
         const feedId = uniqueId();
-        state.feeds.unshift({ ...feed, id: feedId, url });
+        utils.feeds.unshift({ ...feed, id: feedId, url });
         const postsId = posts.map((post) => ({ ...post, id: uniqueId() }));
-        state.posts.unshift(...postsId);
-        state.loading.error = null;
-        state.loading.condition = 'rssAdded';
+        utils.posts.unshift(...postsId);
+        utils.loading.error = null;
+        utils.loading.condition = 'rssAdded';
         if (initialState.feeds.length === 1) {
-          addNewPosts(state);
+          addNewPosts(utils);
         }
       })
       .catch((error) => {
         if (error.isAxiosError) {
-          state.loading.error = 'networkError';
-          state.loading.condition = 'failed';
+          utils.loading.error = 'networkError';
+          utils.loading.condition = 'failed';
         } else {
-          state.form.error = error.isParsingError ? 'invalidRss' : error.message;
-          state.form.condition = 'failed';
+          utils.form.error = error.isParsingError ? 'invalidRss' : error.message;
+          utils.form.condition = 'failed';
         }
       });
   });
   elements.posts.addEventListener('click', (e) => {
     const { id } = e.target.dataset;
-    state.uiState.modalId = id;
-    state.uiState.viewed.add(id);
+    utils.uiState.modalId = id;
+    utils.uiState.viewed.add(id);
   });
 };
