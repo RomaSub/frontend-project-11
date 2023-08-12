@@ -3,7 +3,7 @@ export default {
     rssAdded: 'RSS успешно загружен',
     errors: {
       rssAlredyWas: 'RSS уже существует',
-      networkError: 'Ошибка сети', // https://feeds.washingtonpost.com/rss/world, http://lenta.ru/l/r/EX/import.rss
+      networkError: 'Ошибка сети', // https://feeds.washingtonpost.com/rss/world, http://lenta.ru/l/r/ex/import.rss
       invalidRss: 'Ресурс не содержит валидный RSS', // https://news.yandex.ru/daily.rss , http://www.dp.ru/exportnews.xml
       invalidUrl: 'Ссылка должна быть валидным URL',
     },

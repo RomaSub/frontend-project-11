@@ -27,7 +27,7 @@ const renderFormProcess = (elements, state, i18nInstance) => {
     feedback, urlInput, form, button,
   } = elements;
   button.disabled = state.loading.condition === 'loading';
-  // urlInput.disabled = state.loading.condition === 'loading';
+  urlInput.disabled = state.loading.condition === 'loading';
   if (state.loading.condition === 'failed') {
     feedback.classList.remove('text-success');
     feedback.classList.add('text-danger');
@@ -130,7 +130,6 @@ const renderFeeds = (elements, watchedState, i18nInstance) => {
 export default (elements, initialState, i18nInstance) => {
   const watchedState = onChange(initialState, (path) => {
     switch (path) {
-      case 'form.error':
       case 'form.condition':
         renderValidation(elements, watchedState, i18nInstance);
         break;
@@ -148,7 +147,8 @@ export default (elements, initialState, i18nInstance) => {
         renderModal(elements, watchedState);
         break;
       default:
-        throw new Error(`unknow path: ${path}`);
+        // throw new Error(`unknow path: ${path}`);
+        break;
     }
   });
   return watchedState;

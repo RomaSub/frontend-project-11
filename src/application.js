@@ -90,7 +90,7 @@ export default () => {
       .then((validUrl) => {
         state.form.condition = 'success';
         state.loading.condition = 'loading';
-        return axios.get(createUrl(validUrl));
+        return axios.get(createUrl(validUrl), { timeout: 5000 });
       })
       .then((response) => {
         state.loading.condition = 'loaded';
@@ -109,9 +109,10 @@ export default () => {
         if (error.isAxiosError) {
           state.loading.error = 'networkError';
           state.loading.condition = 'failed';
+        } else {
+          state.form.error = error.isParsingError ? 'invalidRss' : error.message;
+          state.form.condition = 'failed';
         }
-        state.form.error = error.isParsingError ? 'invalidRss' : error.message;
-        state.form.condition = 'failed';
       });
   });
   elements.posts.addEventListener('click', (e) => {
