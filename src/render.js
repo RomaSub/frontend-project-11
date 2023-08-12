@@ -45,7 +45,7 @@ const renderFormProcess = (elements, state, i18nInstance) => {
   }
 };
 
-const renderPosts = (elements, watchedState, i18nInstance) => {
+const renderPosts = (elements, state, i18nInstance) => {
   const { posts } = elements;
   posts.innerHTML = '';
   const postsSection = document.createElement('div');
@@ -63,12 +63,12 @@ const renderPosts = (elements, watchedState, i18nInstance) => {
   const ulPosts = document.createElement('ul');
   ulPosts.classList.add('list-group', 'border-0', 'rounded-0');
 
-  watchedState.posts.forEach((post) => {
+  state.posts.forEach((post) => {
     const liPost = document.createElement('li');
     liPost.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
     const titlePost = document.createElement('a');
-    if (watchedState.uiState.viewed.has(post.id)) {
+    if (state.uiState.viewed.has(post.id)) {
       titlePost.classList.add('fw-normal', 'link-secondary');
     } else {
       titlePost.classList.add('fw-bold');
@@ -98,7 +98,7 @@ const renderPosts = (elements, watchedState, i18nInstance) => {
   posts.appendChild(postsSection);
 };
 
-const renderFeeds = (elements, watchedState, i18nInstance) => {
+const renderFeeds = (elements, state, i18nInstance) => {
   const { feeds } = elements;
   feeds.innerHTML = '';
   const feedsSection = document.createElement('div');
@@ -110,7 +110,7 @@ const renderFeeds = (elements, watchedState, i18nInstance) => {
   const ulFeeds = document.createElement('ul');
   ulFeeds.classList.add('list-group', 'border-0', 'rounded-0');
   feedsSection.append(ulFeeds);
-  watchedState.feeds.forEach((feed) => {
+  state.feeds.forEach((feed) => {
     const liFeed = document.createElement('li');
     const titleFeed = document.createElement('h3');
     const descriptionFeed = document.createElement('p');
@@ -147,7 +147,6 @@ export default (elements, initialState, i18nInstance) => {
         renderModal(elements, watchedState);
         break;
       default:
-        // throw new Error(`unknow path: ${path}`);
         break;
     }
   });
